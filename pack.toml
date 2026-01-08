@@ -1,0 +1,4 @@
+[custom.all.uithub-cli]
+type   = "local"
+path   = "."
+ipkg   = "uithub-cli.ipkg"

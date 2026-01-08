@@ -1,0 +1,13 @@
+package uithub-cli
+version = 0.1.0
+authors = "bob"
+brief = "CLI wrapper for uithub - fetch GitHub repos as LLM-friendly markdown"
+
+sourcedir = "src"
+main = Main
+
+executable = "uithub-cli"
+
+depends = base
+        , contrib
+        , network

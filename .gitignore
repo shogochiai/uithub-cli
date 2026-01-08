@@ -1,0 +1,21 @@
+# Idris2 build artifacts
+build/
+*.ttc
+*.ttm
+
+# Pack artifacts
+.pack/
+depends/
+
+# Config (contains API key)
+.uithub-cli/
+
+# Lazy core
+.lazy/
+
+# Claude Code
+.claude/
+
+# OS files
+.DS_Store
+*~
