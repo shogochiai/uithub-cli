@@ -2,11 +2,38 @@
 ||| These tests exercise full pipelines to maximize semantic coverage
 module Integration.Tests.AllTests
 
-import Idris2CoverageHelper.PerModule
 import Data.List
 import Data.String
+import System
 
 %default covering
+
+-- =============================================================================
+-- Minimal Test Infrastructure (no external dependencies)
+-- =============================================================================
+
+||| Test definition: (specId, description, test function)
+public export
+TestDef : Type
+TestDef = (String, String, IO Bool)
+
+||| Helper to create test definition
+export
+test : String -> String -> IO Bool -> TestDef
+test specId desc fn = (specId, desc, fn)
+
+||| Run a single test and print result
+runSingleTest : TestDef -> IO Bool
+runSingleTest (specId, desc, testFn) = do
+  result <- testFn
+  putStrLn $ "[" ++ (if result then "PASS" else "FAIL") ++ "] " ++ specId ++ ": " ++ desc
+  pure result
+
+||| Run a list of tests and return success status
+runTestList : List TestDef -> IO Bool
+runTestList tests = do
+  results <- traverse runSingleTest tests
+  pure $ all id results
 
 -- =============================================================================
 -- Full Pipeline Integration Tests
@@ -54,13 +81,20 @@ allTests =
   ]
 
 -- =============================================================================
--- Main Entry Point
+-- Main Entry Point (expected by idris2-coverage Library API)
 -- =============================================================================
 
-||| Run all tests (required by idris2-coverage UnifiedRunner)
+||| Run all tests (required signature for idris2-coverage)
 export
 runAllTests : IO ()
-runAllTests = runTestSuite "Integration" allTests
+runAllTests = do
+  putStrLn $ "Running Integration (" ++ show (length allTests) ++ " tests)..."
+  allPassed <- runTestList allTests
+  putStrLn ""
+  putStrLn $ "Total: " ++ show (length allTests) ++ " tests"
+  if allPassed
+    then putStrLn "All tests passed!"
+    else putStrLn "Some tests failed."
 
 ||| Main entry point
 main : IO ()
