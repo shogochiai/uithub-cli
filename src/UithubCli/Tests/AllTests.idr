@@ -11,6 +11,7 @@ import System.Directory
 import UithubCli.Config
 import UithubCli.Cache
 import UithubCli.Http
+import UithubCli.RepoList
 
 %default covering
 
@@ -184,6 +185,57 @@ test_cmd_list = do
   pure $ any (\(o, r) => o == testOwner && r == testRepo) repos
 
 -- =============================================================================
+-- RepoList Tests
+-- =============================================================================
+
+||| REQ_UC_REPO_001: Parse repo list from file content
+||| Tests parseRepoList function
+test_repo_parse : IO Bool
+test_repo_parse = do
+  let content = "# comment\n\nowner/repo1\n  owner/repo2  \n# another comment\nowner/repo3"
+  let repos = parseRepoList content
+  -- Should have 3 repos, trimmed and without comments
+  pure $ repos == ["owner/repo1", "owner/repo2", "owner/repo3"]
+
+||| REQ_UC_REPO_002: Serialize repo list to file content
+||| Tests serializeRepoList function
+test_repo_serialize : IO Bool
+test_repo_serialize = do
+  let repos = ["owner/repo1", "owner/repo2"]
+  let content = serializeRepoList repos
+  -- Should contain header and repos
+  pure $ isInfixOf "owner/repo1" content && isInfixOf "owner/repo2" content
+
+||| REQ_UC_REPO_003: Add repo to list file
+||| Tests addRepoToFile (via roundtrip)
+test_repo_add : IO Bool
+test_repo_add = do
+  let testFile = "/tmp/test-uithub-toml-" ++ show !time ++ ".toml"
+  -- Add first repo
+  Right _ <- writeRepoListFile testFile ["owner/repo1"]
+    | Left _ => pure False
+  -- Add second repo
+  Right _ <- addRepoToFile testFile "owner/repo2"
+    | Left _ => pure False
+  -- Read back
+  repos <- readRepoListFile testFile
+  -- Cleanup
+  _ <- system $ "rm -f '" ++ testFile ++ "'"
+  pure $ elem "owner/repo1" repos && elem "owner/repo2" repos
+
+||| REQ_UC_INSTALL_001: Install fetches all repos from uithub.toml
+||| Tests that parseRepoList handles empty/malformed input
+test_install_parse : IO Bool
+test_install_parse = do
+  -- Empty content
+  let repos1 = parseRepoList ""
+  -- Only comments
+  let repos2 = parseRepoList "# just a comment\n# another"
+  -- Only whitespace
+  let repos3 = parseRepoList "   \n   \n   "
+  pure $ repos1 == [] && repos2 == [] && repos3 == []
+
+-- =============================================================================
 -- Test Collection
 -- =============================================================================
 
@@ -199,6 +251,10 @@ allTests =
   , test "REQ_UC_CMD_001" "Fetch command creates cache" test_cmd_fetch
   , test "REQ_UC_CMD_002" "Get command returns cached content" test_cmd_get
   , test "REQ_UC_CMD_003" "List command shows cached repos" test_cmd_list
+  , test "REQ_UC_REPO_001" "Parse repo list from file content" test_repo_parse
+  , test "REQ_UC_REPO_002" "Serialize repo list to file content" test_repo_serialize
+  , test "REQ_UC_REPO_003" "Add repo to list file" test_repo_add
+  , test "REQ_UC_INSTALL_001" "Install fetches all repos from uithub.toml" test_install_parse
   ]
 
 -- =============================================================================

@@ -48,3 +48,25 @@ title = "Get command returns cached content"
 [[spec]]
 id = "REQ_UC_CMD_003"
 title = "List command shows cached repos"
+
+[[spec_area]]
+name = "RepoList"
+
+[[spec]]
+id = "REQ_UC_REPO_001"
+title = "Parse repo list from file content"
+
+[[spec]]
+id = "REQ_UC_REPO_002"
+title = "Serialize repo list to file content"
+
+[[spec]]
+id = "REQ_UC_REPO_003"
+title = "Add repo to list file"
+
+[[spec_area]]
+name = "Install"
+
+[[spec]]
+id = "REQ_UC_INSTALL_001"
+title = "Install fetches all repos from uithub.toml"
