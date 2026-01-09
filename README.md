@@ -1,14 +1,14 @@
 # uithub-cli
 
-GitHub repos を LLM-friendly な Markdown として取得・キャッシュする CLI ツール。
+CLI tool for fetching and caching GitHub repos as LLM-friendly Markdown.
 
-[uithub.com](https://uithub.com) の API を利用して、リポジトリ全体を単一の Markdown ファイルとしてローカルにキャッシュします。
+Uses the [uithub.com](https://uithub.com) API to cache entire repositories as single Markdown files locally.
 
 ## Requirements
 
 - [Idris2](https://github.com/idris-lang/Idris2) 0.8.0+
 - [pack](https://github.com/stefan-hoeck/idris2-pack) (Idris2 package manager)
-- uithub.com API key ([https://uithub.com](https://uithub.com) で取得)
+- uithub.com API key (get one at [https://uithub.com](https://uithub.com))
 
 ## Build & Install
 
@@ -20,7 +20,7 @@ cd uithub-cli
 # Build
 pack build uithub-cli.ipkg
 
-# Install to ~/.local/bin (PATH に含まれている前提)
+# Install to ~/.local/bin (assuming it's in your PATH)
 cp build/exec/uithub-cli ~/.local/bin/
 cp -r build/exec/uithub-cli_app ~/.local/bin/
 
@@ -30,67 +30,67 @@ uithub-cli
 
 ## Setup
 
-### API Key の設定
+### API Key Configuration
 
 ```bash
-# uithub.com で API key を取得後
+# After obtaining API key from uithub.com
 uithub-cli config set-key uitk_xxxxxxxxxxxxxxxx
 
-# 確認
+# Verify
 uithub-cli config show
 ```
 
 ## Usage
 
-### 基本コマンド
+### Basic Commands
 
 ```bash
-# リポジトリを取得してキャッシュ
+# Fetch and cache a repository
 uithub-cli fetch owner/repo
 
-# キャッシュから取得 (なければ自動 fetch)
+# Get from cache (auto-fetches if not cached)
 uithub-cli get owner/repo
 
-# 強制再取得
+# Force re-fetch
 uithub-cli update owner/repo
 
-# キャッシュ一覧
+# List cached repos
 uithub-cli list
 ```
 
-### uithub.toml によるリポジトリ管理
+### Repository Management with uithub.toml
 
-プロジェクトごと、またはマシン全体で関心のあるリポジトリを `uithub.toml` で管理できます。
+Manage repos of interest per-project or machine-wide using `uithub.toml`.
 
-#### プロジェクトローカル (./uithub.toml)
+#### Project-local (./uithub.toml)
 
 ```bash
-# fetch と同時にローカル uithub.toml に追記
+# Fetch and save to local uithub.toml
 uithub-cli fetch -s owner/repo
 uithub-cli fetch --save owner/repo
 
-# ローカル uithub.toml の一覧表示
+# List repos in local uithub.toml
 uithub-cli repos
 
-# ローカル uithub.toml の全リポを一括取得
+# Fetch all repos from local uithub.toml
 uithub-cli install
 ```
 
-#### マシングローバル (~/.uithub-cli/uithub.toml)
+#### Machine-global (~/.uithub-cli/uithub.toml)
 
 ```bash
-# fetch と同時にグローバル uithub.toml に追記
+# Fetch and save to global uithub.toml
 uithub-cli fetch -g owner/repo
 uithub-cli fetch --global owner/repo
 
-# グローバル uithub.toml の一覧表示
+# List repos in global uithub.toml
 uithub-cli repos -g
 
-# グローバル uithub.toml の全リポを一括取得
+# Fetch all repos from global uithub.toml
 uithub-cli install -g
 ```
 
-### uithub.toml フォーマット
+### uithub.toml Format
 
 ```toml
 # uithub.toml - repos of interest
@@ -100,39 +100,39 @@ shogochiai/idris2-coverage
 idris-lang/Idris2
 ```
 
-## Example: プロジェクトセットアップ
+## Example: Project Setup
 
-新しいプロジェクトで依存ライブラリのソースを参照したい場合:
+When you want to reference dependency sources in a new project:
 
 ```bash
 cd my-project
 
-# 関連リポを fetch して uithub.toml に記録
+# Fetch related repos and record in uithub.toml
 uithub-cli fetch -s idris-lang/Idris2
 uithub-cli fetch -s stefan-hoeck/idris2-pack
 uithub-cli fetch -s stefan-hoeck/idris2-elab-util
 
-# uithub.toml を確認
+# Check uithub.toml
 uithub-cli repos
 # local uithub.toml:
 #   idris-lang/Idris2
 #   stefan-hoeck/idris2-pack
 #   stefan-hoeck/idris2-elab-util
 
-# 別環境で一括取得
+# Bulk fetch on another machine
 uithub-cli install
 ```
 
-## Example: グローバルライブラリ
+## Example: Global Library
 
-よく参照するリポジトリをグローバルに登録:
+Register frequently referenced repos globally:
 
 ```bash
-# グローバルに登録
+# Register globally
 uithub-cli fetch -g anthropics/anthropic-cookbook
 uithub-cli fetch -g anthropics/courses
 
-# どこからでも参照可能
+# Access from anywhere
 uithub-cli get anthropics/anthropic-cookbook | head -100
 ```
 
@@ -144,9 +144,9 @@ uithub-cli get anthropics/anthropic-cookbook | head -100
 
 ## Notes
 
-- 大きなリポジトリは uithub.com 側でタイムアウトすることがあります
-- プライベートリポジトリは 404 を返します
-- キャッシュは手動削除まで永続化されます
+- Large repositories may timeout on uithub.com's side
+- Private repositories return 404
+- Cache persists until manually deleted
 
 ## License
 
