@@ -145,7 +145,7 @@ uithub-cli get anthropics/anthropic-cookbook | head -100
 ## Notes
 
 - Large repositories may timeout on uithub.com's side
-- Private repositories return 404
+- Private repositories require a paid uithub.com subscription (free tier returns 404)
 - Cache persists until manually deleted
 
 ## License
