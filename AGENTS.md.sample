@@ -1,0 +1,57 @@
+# AGENTS.md
+
+Project context for AI coding assistants.
+
+## Project Overview
+
+uithub-cli is an Idris2 CLI tool for fetching and caching GitHub repositories as LLM-friendly Markdown via uithub.com API.
+
+## Tech Stack
+
+- Language: Idris2 0.8.0+
+- Package Manager: pack
+- Build: `pack build uithub-cli.ipkg`
+
+## Project Structure
+
+```
+src/
+  Main.idr              # Entry point, CLI argument parsing
+  UithubCli/
+    Config.idr          # API key and config file management
+    Cache.idr           # Local cache operations
+    Http.idr            # uithub.com API calls
+    Commands.idr        # Command implementations
+    RepoList.idr        # uithub.toml parsing/writing
+    SPEC.toml           # Specifications (for lazy core)
+    Tests/
+      AllTests.idr      # Test suite
+```
+
+## Key Commands
+
+- `fetch owner/repo` - Fetch and cache a repository
+- `get owner/repo` - Get from cache (auto-fetch if missing)
+- `install` - Fetch all repos from uithub.toml
+- `repos` - List repos in uithub.toml
+
+## Development
+
+```bash
+# Build
+pack build uithub-cli.ipkg
+
+# Run tests
+pack run uithub-cli.ipkg --test
+
+# Install locally
+cp build/exec/uithub-cli ~/.local/bin/
+cp -r build/exec/uithub-cli_app ~/.local/bin/
+```
+
+## Conventions
+
+- Spec IDs use `REQ_UC_*` prefix (e.g., REQ_UC_CFG_001)
+- Tests mirror spec IDs in docstrings
+- Error handling uses `Either FileError` pattern
+- Shell commands via `system` function for file operations
