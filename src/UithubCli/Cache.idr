@@ -1,5 +1,6 @@
 module UithubCli.Cache
 
+import System
 import System.File
 import System.Directory
 import Data.String
@@ -9,10 +10,6 @@ import Data.List1
 import UithubCli.Config
 
 %default total
-
-isFileExists : FileError -> Bool
-isFileExists FileExists = True
-isFileExists _ = False
 
 -- Parse "owner/repo" or "https://github.com/owner/repo" to (owner, repo)
 export
@@ -45,13 +42,10 @@ covering
 ensureRepoCacheDir : String -> String -> IO (Either FileError ())
 ensureRepoCacheDir owner repo = do
   cache <- cacheDir
-  let ownerDir = cache ++ "/" ++ owner
-  Right _ <- createDir ownerDir
-    | Left err => if isFileExists err then pure (Right ()) else pure (Left err)
-  let repoDir = ownerDir ++ "/" ++ repo
-  Right _ <- createDir repoDir
-    | Left err => if isFileExists err then pure (Right ()) else pure (Left err)
-  pure (Right ())
+  let repoDir = cache ++ "/" ++ owner ++ "/" ++ repo
+  -- Use mkdir -p to handle all intermediate directories
+  exitCode <- system $ "mkdir -p '" ++ repoDir ++ "'"
+  pure $ if exitCode == 0 then Right () else Left FileNotFound
 
 export
 covering
