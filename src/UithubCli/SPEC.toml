@@ -1,53 +1,50 @@
 # UithubCli Module Specification
 # Tests for uithub CLI wrapper functionality
 
-[definitions]
-prefix = "UC"
-
 [[spec_area]]
 name = "Configuration"
 
 [[spec]]
-id = "${prefix}_CFG_001"
+id = "REQ_UC_CFG_001"
 title = "Load API key from environment"
 
 [[spec]]
-id = "${prefix}_CFG_002"
+id = "REQ_UC_CFG_002"
 title = "Load API key from config file"
 
 [[spec_area]]
 name = "Cache Operations"
 
 [[spec]]
-id = "${prefix}_CACHE_001"
+id = "REQ_UC_CACHE_001"
 title = "Cache file creation and retrieval"
 
 [[spec]]
-id = "${prefix}_CACHE_002"
+id = "REQ_UC_CACHE_002"
 title = "Cache invalidation on update"
 
 [[spec_area]]
 name = "HTTP Operations"
 
 [[spec]]
-id = "${prefix}_HTTP_001"
+id = "REQ_UC_HTTP_001"
 title = "Fetch repo with valid auth"
 
 [[spec]]
-id = "${prefix}_HTTP_002"
+id = "REQ_UC_HTTP_002"
 title = "Handle HTTP error responses"
 
 [[spec_area]]
 name = "Commands"
 
 [[spec]]
-id = "${prefix}_CMD_001"
+id = "REQ_UC_CMD_001"
 title = "Fetch command creates cache"
 
 [[spec]]
-id = "${prefix}_CMD_002"
+id = "REQ_UC_CMD_002"
 title = "Get command returns cached content"
 
 [[spec]]
-id = "${prefix}_CMD_003"
+id = "REQ_UC_CMD_003"
 title = "List command shows cached repos"
