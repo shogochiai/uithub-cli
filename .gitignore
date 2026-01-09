@@ -19,3 +19,4 @@ depends/
 # OS files
 .DS_Store
 *~
+uithub.toml
